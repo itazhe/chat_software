@@ -7,6 +7,7 @@ import json
 import pymysql
 import sys,os
 import re
+import user_reg_login
 
 conf = json.load(open(r"C:\Users\POWER\Desktop\项目\chat_software\server_conf.json"))  # 加载配置信息
 # dest_file_abs_path = os.path.abspath(sys.argv[1])
@@ -89,7 +90,7 @@ def user_service_thread(sock_conn, client_addr):
                     rsp["error_code"] = 1
                 else:
                     # print("用户%s注册成功！" % req["args"]["uname"])
-                    pass
+                    rsp["error_code"] = 0
 
                 rsp = json.dumps(rsp).encode()
                 data_len = "{:<15}".format(len(rsp)).encode()
@@ -113,7 +114,8 @@ def user_service_thread(sock_conn, client_addr):
                 sock_conn.send(data_len)
                 sock_conn.send(rsp)            
     finally:
-        # print("客户端(%s:%s)断开连接！" % client_addr)
+
+    #     # print("客户端(%s:%s)断开连接！" % client_addr)
         sock_conn.close()
 
 def main():
@@ -129,7 +131,8 @@ def main():
     while True:
         sock_conn, client_addr = sock_listen.accept()
         client_socks.append((sock_conn, client_addr))
-        threading.Thread(target=client_chat, args=(sock_conn, client_addr)).start()
+        threading.Thread(target=user_service_thread, args=(sock_conn, client_addr)).start()
+        # threading.Thread(target=client_chat, args=(sock_conn, client_addr)).start()
 
 if __name__ == '__main__':
     main()
