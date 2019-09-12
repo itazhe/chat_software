@@ -1,6 +1,7 @@
 from tkinter import *
 #import tkinter.messagebox
 import socket, threading
+from PIL import ImageTk
 import json
 
 def main_page():
@@ -14,33 +15,43 @@ def main_page():
     # 创建tk对象
     mychat = Tk()
 
+    # 设置tkinter窗口的位置
+    mychat.geometry("+450+200")
+
     # 设置窗口标题/
     mychat.title("Mychat")
 
-    # 设置窗口大小
-    mychat.minsize(400, 300)
+    # # 设置窗口大小
+    # mychat.minsize(400, 300)
+    # 设置背景图片
+    canvas = Canvas(mychat,width = 420, height = 300)
+    canvas.pack(expand = YES, fill = BOTH)
+
+    image = ImageTk.PhotoImage(file = r"C:\Users\POWER\Desktop\web\img2\1.jpg")
+    canvas.create_image(10, 10, image = image, anchor = NW)
 
     # 设置窗口能否变长变宽，默认为True
     mychat.resizable(width=False, height=False)
 
     # 设置用户名标签
-    Label(mychat, text="用户名：", font=("Arial", 12)).place(x = 40, y = 100)
+    Label(mychat, text="用户名：", font=("Arial", 12)).place(x = 40, y = 110)
     # 设置用户名框，以明文的形式显示
     log_uname = Entry(mychat, show=None, font=(14))
-    log_uname.place(x = 115, y = 100)
+    log_uname.place(x = 115, y = 110)
 
     # 设置密码标签
-    Label(mychat, text="密    码：", font=("Arial", 12)).place(x = 40, y = 150)
+    Label(mychat, text="密    码：", font=("Arial", 12)).place(x = 40, y = 160)
     # 设置密码框，以明文的形式显示
     log_passwd = Entry(mychat, show="*", font=(14))
-    log_passwd.place(x = 115, y = 150)
+    log_passwd.place(x = 115, y = 160)
 
     # 设置登录按钮
-    Button(mychat, text="登 录", font=("Arial", 12), command=client_login_send).place(x = 120, y = 200)
+    Button(mychat, text="登 录", font=("Arial", 12), command=client_login_send).place(x = 150, y = 210)
+    # Button(mychat, text="登 录", font=("Arial", 12), command=chat_page).place(x = 150, y = 210)
 
-    Button(mychat, text="注 册", font=("Arial", 12), command=reg_page).place(x = 200, y = 200)
+    Button(mychat, text="注 册", font=("Arial", 12), command=reg_page).place(x = 230, y = 210)
 
-
+    
     mychat.mainloop()
 
 
@@ -48,34 +59,58 @@ def chat_page():
     '''
     函数内容：聊天窗口
     '''
-    global chat_msg_box
-    global chat_record_box
+    global chat_frame
+    global chat_input_frame
 
-    # 创建tk对象
     mychat = Tk()
     # 设置窗口标题
     mychat.title("P1901班专属聊天室")
 
-    chat_record_box = Text(mychat)
-    # 窗口不可点击
-    chat_record_box.configure(state=DISABLED)
-    chat_record_box.pack(padx=10, pady=10)
+    # 设置窗口大小
+    mychat.minsize(650, 460)
 
-    # 设置窗口能否变长变宽，默认为True
+    # 设置背景图片
+    # canvas = Canvas(mychat, width=1200,height=699,bd=0, highlightthickness=0)
+
+    # canvas = Canvas(mychat)
+    # canvas.pack(expand = YES, fill = BOTH)
+
+    # image = ImageTk.PhotoImage(file = r"C:\Users\POWER\Desktop\web\img2\1.jpg")
+    # canvas.create_image(10, 10, image = image, anchor = NW)
+    
+
+    # 设置tkinter窗口的位置
+    mychat.geometry("+360+130")
+
+    # 设置窗口背景颜色
+    mychat.configure(bg="#334353")
+
+    #设置窗口能否变长变宽，默认为True
     mychat.resizable(width=False, height=False)
 
-    chat_msg_box = Text(mychat)
-    chat_msg_box.configure(width=65, height=5)
-    chat_msg_box.pack(side=LEFT, padx=10, pady=10)
+    # 设置聊天框 
+    chat_frame = Text(mychat, width=70, height=25)
+    chat_frame.place(x = 3, y = 2)
+    #窗口不可点击
+    chat_frame.configure(state=DISABLED)
 
-    send_msg_btn = Button(mychat, text="发送", command=on_send_msg)
-    # send_msg_btn = Button(mychat, text="发送")
-    send_msg_btn.pack(side=RIGHT, padx=10, pady=10, ipadx=15, ipady=15)
+    # 设置聊天输入框 
+    chat_input_frame = Text(mychat, width=70, height=5)
+    chat_input_frame.place(x = 3, y = 350)
+
+    # 信息框
+    message_box = Text(mychat, width=20, height=34)
+    message_box.place(x = 500, y = 2)
+    #窗口不可点击
+    message_box.configure(state=DISABLED)
+
+    send_msg_btn = Button(mychat, text="发 送", font=("Arial", 12), command=on_send_msg, width=10)
+    # send_msg_btn = Button(mychat, text="发 送", font=("Arial", 12), width=10)
+    send_msg_btn.place(x = 390, y = 423)
 
     threading.Thread(target=recv_chat_data).start()
 
     mychat.mainloop()
-
     
 def reg_page():
     '''
@@ -93,37 +128,50 @@ def reg_page():
     mychat.title("Mychat-Reg")
 
     # 设置窗口大小
-    mychat.minsize(400, 300)
+    mychat.minsize(430, 302)
+
+    # 设置窗口背景颜色
+    mychat.configure(bg="#334353")
+    # 设置背景图片
+    # canvas2 = Canvas(mychat,width = 420, height = 300)
+    # canvas2.pack(expand = YES, fill = BOTH)
+
+    # image2 = ImageTk.PhotoImage(file = r"C:\Users\POWER\Desktop\web\img2\3.jpg")
+    # canvas2.create_image(10, 10, image = image2, anchor = NW)
+
+    # 设置tkinter窗口的位置
+    mychat.geometry("+450+202")
 
     # 设置窗口能否变长变宽，默认为True
     mychat.resizable(width=False, height=False)
 
     # 设置用户名标签
-    Label(mychat, text="用户名：", font=("Arial", 12)).place(x = 35, y = 25)
+    Label(mychat, text="用户名：", font=("Arial", 12)).place(x = 45, y = 35)
     # 设置用户名框，以明文的形式显示
     reg_uname = Entry(mychat, show=None, font=(14))
-    reg_uname.place(x = 110, y = 25)
+    reg_uname.place(x = 120, y = 35)
 
     # 设置密码标签
-    Label(mychat, text="密    码：", font=("Arial", 12)).place(x = 35, y = 75)
+    Label(mychat, text="密    码：", font=("Arial", 12)).place(x = 45, y = 85)
     # 设置密码框，以明文的形式显示
     reg_passwd = Entry(mychat, show="*", font=(14))
-    reg_passwd.place(x = 110, y = 75)
+    reg_passwd.place(x = 120, y = 85)
 
     # 设置手机号标签
-    Label(mychat, text="手机号：", font=("Arial", 12)).place(x = 35, y = 125)
+    Label(mychat, text="手机号：", font=("Arial", 12)).place(x = 45, y = 135)
     # 设置手机号框，以明文的形式显示
     reg_phone = Entry(mychat, show=None, font=(14))
-    reg_phone.place(x = 110, y = 125)
+    reg_phone.place(x = 120, y = 135)
 
     # 设置邮箱标签
-    Label(mychat, text="邮    箱：", font=("Arial", 12)).place(x = 35, y = 175)
+    Label(mychat, text="邮    箱：", font=("Arial", 12)).place(x = 45, y = 185)
     # 设置邮箱框，以明文的形式显示
     reg_email = Entry(mychat, show=None, font=(14))
-    reg_email.place(x = 110, y = 175)
+    reg_email.place(x = 120, y = 185)
 
     # 设置注册按钮
-    Button(mychat, text="注 册", font=("Arial", 12), command=client_reg_send).place(x = 185, y = 230)
+    Button(mychat, text="注     册", font=("Arial", 12), command=client_reg_send, width=15, bg="#334353", fg="white").place(x = 160, y = 240)
+    # Button(mychat, text="注 册", font=("Arial", 12)).place(x = 185, y = 230)
 
 
     mychat.mainloop()
@@ -260,7 +308,7 @@ def on_send_msg():
     函数功能：发送聊天消息
     '''
     nick_name = log_uname.get()
-    chat_msg = chat_msg_box.get(1.0, "end")
+    chat_msg = chat_input_frame.get(1.0, "end")
     if chat_msg == "\n":
         return
 
@@ -272,10 +320,10 @@ def on_send_msg():
     except:
         messagebox.showerror("温馨提示", "发送消息失败，请检查网络连接！")
     else:
-        chat_msg_box.delete(1.0, "end")
-        chat_record_box.configure(state=NORMAL)
-        chat_record_box.insert("end", chat_data.decode() + "\n")
-        chat_record_box.configure(state=DISABLED)
+        chat_input_frame.delete(1.0, "end")
+        chat_frame.configure(state=NORMAL)
+        chat_frame.insert("end", chat_data.decode() + "\n")
+        chat_frame.configure(state=DISABLED)
 
 
 def recv_chat_data():
@@ -302,9 +350,9 @@ def recv_chat_data():
                     recv_size += len(tmp_data)
                 else:
                     # 显示
-                    chat_record_box.configure(state=NORMAL)
-                    chat_record_box.insert("end", msg_content_data.decode() + "\n")
-                    chat_record_box.configure(state=DISABLED)
+                    chat_frame.configure(state=NORMAL)
+                    chat_frame.insert("end", msg_content_data.decode() + "\n")
+                    chat_frame.configure(state=DISABLED)
                     continue
                 break
         finally:
@@ -312,10 +360,9 @@ def recv_chat_data():
                 sock = socket.socket()
                 sock.connect(("127.0.0.1", 9999))
 
-sock = socket.socket()
-sock.connect(("127.0.0.1", 9999))
+# sock = socket.socket()
+# sock.connect(("127.0.0.1", 9999))
 
-# threading.Thread(target=recv_chat_data).start()
 
 if __name__ == "__main__":
     main_page()
@@ -323,4 +370,5 @@ if __name__ == "__main__":
     # reg_page()
     # reg_failed_page()
 
-sock.close()
+
+# sock.close()
